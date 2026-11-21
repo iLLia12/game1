@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chuurnp5k4wsx"
-path="res://.godot/imported/Soviet Sunset Apartment Street.png-2332167ea05250fdc64444c05ce42909.ctex"
+uid="uid://b1svf5jkinpxr"
+path="res://.godot/imported/run_with_gun.png-b1cd98179b8236c6ba01e866a300983a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/background/Soviet Sunset Apartment Street.png"
-dest_files=["res://.godot/imported/Soviet Sunset Apartment Street.png-2332167ea05250fdc64444c05ce42909.ctex"]
+source_file="res://assets/sprites/hero/states/run/run_with_gun.png"
+dest_files=["res://.godot/imported/run_with_gun.png-b1cd98179b8236c6ba01e866a300983a.ctex"]
 
 [params]
 

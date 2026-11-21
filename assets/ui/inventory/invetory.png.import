@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cymoswbj6glyx"
-path="res://.godot/imported/jump1.png-a697a58d4ba337a8c71cc3363dd7f055.ctex"
+uid="uid://cpdhvvnvhlib3"
+path="res://.godot/imported/invetory.png-35a50e14f4fd2d2a87dd8245fb4eade8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/hero/states/jump/jump1.png"
-dest_files=["res://.godot/imported/jump1.png-a697a58d4ba337a8c71cc3363dd7f055.ctex"]
+source_file="res://assets/ui/inventory/invetory.png"
+dest_files=["res://.godot/imported/invetory.png-35a50e14f4fd2d2a87dd8245fb4eade8.ctex"]
 
 [params]
 
