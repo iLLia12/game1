@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvwov73y3l6s6"
-path="res://.godot/imported/vintorez.png-db0e06bf7d791b43608161d407d1ff04.ctex"
+uid="uid://blrnfmpbyf2tp"
+path="res://.godot/imported/idle1.png-41e228d34d974e8210229ad20266e885.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/hero/states/idel/weapons/vintorez.png"
-dest_files=["res://.godot/imported/vintorez.png-db0e06bf7d791b43608161d407d1ff04.ctex"]
+source_file="res://assets/sprites/hero/states/idle/idle1.png"
+dest_files=["res://.godot/imported/idle1.png-41e228d34d974e8210229ad20266e885.ctex"]
 
 [params]
 

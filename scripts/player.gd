@@ -85,9 +85,9 @@ const MUZZLE_SMOKE := preload("res://scripts/muzzle_smoke.gd")
 @export_range(0, 11) var sneak_stand_frame := 0
 ## Idle (breathing) animation speed.
 @export_range(0.5, 30.0, 0.5, "suffix:fps") var idle_fps := 6.0
-## Idle frames to play, in order (0-7 = frames of states/idel/idel1.png and idel2.png).
+## Idle frames to play, in order (0-7 = frames of states/idle/idle1.png and idle2.png).
 @export var idle_sequence: Array[int] = [0, 1, 2, 3, 4, 5, 6, 7]
-## Idle speed with a weapon in hand (states/idel/idle_with_no_weapon.png, all frames in order).
+## Idle speed with a weapon in hand (states/idle/idle_with_no_weapon.png, all frames in order).
 @export_range(0.5, 30.0, 0.5, "suffix:fps") var armed_idle_fps := 8.0
 
 @export_subgroup("Slide")
@@ -128,8 +128,8 @@ const MUZZLE_SMOKE := preload("res://scripts/muzzle_smoke.gd")
 # offset puts the cell's foot line on the origin and its centre on x = 0.
 # Each time the hero enters idle from another state, one idle variant is picked at random.
 const IDLE_SHEETS := [
-	{"tex": preload("res://assets/sprites/hero/states/idel/idel1.png"), "rows": 2, "frames": 8, "offset": Vector2(-34, -57)},
-	{"tex": preload("res://assets/sprites/hero/states/idel/idel2.png"), "rows": 2, "frames": 8, "offset": Vector2(-34, -57)},
+	{"tex": preload("res://assets/sprites/hero/states/idle/idle1.png"), "rows": 2, "frames": 8, "offset": Vector2(-34, -57)},
+	{"tex": preload("res://assets/sprites/hero/states/idle/idle2.png"), "rows": 2, "frames": 8, "offset": Vector2(-34, -57)},
 ]
 const RUN_SHEET := {"tex": preload("res://assets/sprites/hero/states/run/run.png"), "rows": 2, "frames": 8, "offset": Vector2(-34, -57)}
 const SPRINT_SHEET := {"tex": preload("res://assets/sprites/hero/states/run/run_x1.5_faster.png"), "rows": 2, "frames": 8, "offset": Vector2(-40, -64)}
@@ -139,7 +139,7 @@ const JUMP_UP_SHEET := {"tex": preload("res://assets/sprites/hero/states/jump/ju
 const JUMP_OFF_SHEET := {"tex": preload("res://assets/sprites/hero/states/jump/jump-off.png"), "rows": 2, "frames": 9, "offset": Vector2(-40, -64)}
 const SHEET_COLUMNS := 5
 ## With the gun, each sheet is swapped for <name>-with-gun.png (or <name>_with_gun.png) found
-## anywhere under this folder (trailing digits ignored, so idel_with_gun covers idel1 and idel2).
+## anywhere under this folder (trailing digits ignored, so idle_with_gun covers idle1 and idle2).
 ## No such file = default sheet.
 const STATES_DIR := "res://assets/sprites/hero/states"
 const GUN_SUFFIXES := ["-with-gun", "_with_gun"]
@@ -151,11 +151,11 @@ const GUN_SUFFIXES := ["-with-gun", "_with_gun"]
 ##   gun_sheets: other animations use the *_with_gun sheets (they're drawn with the shotgun)
 ##   name / icon: how it shows in the inventory
 const WEAPON_ART := preload("res://scripts/weapon_art.gd")
-const ARMED_IDLE := preload("res://assets/sprites/hero/states/idel/idle_with_no_weapon.png")
+const ARMED_IDLE := preload("res://assets/sprites/hero/states/idle/idle_with_no_weapon.png")
 const WEAPONS := {
-	"shotgun": {"art": "res://assets/sprites/hero/states/idel/weapons/shotgun.png", "length": 26, "grip": 0.62, "gun_sheets": true,
+	"shotgun": {"art": "res://assets/sprites/hero/states/idle/weapons/shotgun.png", "length": 26, "grip": 0.62, "gun_sheets": true,
 		"name": "Shotgun", "icon": "res://assets/sprites/objects/pickable/weapons/shotgun_pickup.png"},
-	"vintorez": {"art": "res://assets/sprites/hero/states/idel/weapons/vintorez.png", "length": 34, "grip": 0.55, "gun_sheets": false,
+	"vintorez": {"art": "res://assets/sprites/hero/states/idle/weapons/vintorez.png", "length": 34, "grip": 0.55, "gun_sheets": false,
 		"name": "Vintorez", "icon": "res://assets/sprites/objects/pickable/weapons/vintorez_pickup.png"},
 }
 
@@ -517,7 +517,7 @@ func _gun_sheet(sheet: Dictionary) -> Dictionary:
 	var name := tex.resource_path.get_file().get_basename()
 	var bare := name
 	while bare.length() > 0 and bare[-1].is_valid_int():
-		bare = bare.left(-1)  # idel1 -> idel
+		bare = bare.left(-1)  # idle1 -> idle
 	var path: String = _gun_files.get(name, _gun_files.get(bare, ""))
 	if path != "":
 		gun = _measure_sheet(_match_hero_size(load(path).get_image(), tex.get_image(), sheet.rows))

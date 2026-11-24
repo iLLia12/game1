@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://el0g5tdo28fc"
-path="res://.godot/imported/idle_with_no_weapon.png-6697e914aba08d13d7064b2ba5eb6773.ctex"
+uid="uid://b5wq33fs0doni"
+path="res://.godot/imported/idle3.png-12c0ffe0c55a1a425a5249b136aa3e31.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/hero/states/idel/idle_with_no_weapon.png"
-dest_files=["res://.godot/imported/idle_with_no_weapon.png-6697e914aba08d13d7064b2ba5eb6773.ctex"]
+source_file="res://assets/sprites/hero/states/idle/idle3.png"
+dest_files=["res://.godot/imported/idle3.png-12c0ffe0c55a1a425a5249b136aa3e31.ctex"]
 
 [params]
 

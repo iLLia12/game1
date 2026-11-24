@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://blsllxekuy2ob"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://blrnfmpbyf2tp" path="res://assets/sprites/hero/states/idel/idel1.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://blrnfmpbyf2tp" path="res://assets/sprites/hero/states/idle/idle1.png" id="2"]
 [ext_resource type="Script" path="res://scripts/foot_dust.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="shape"]

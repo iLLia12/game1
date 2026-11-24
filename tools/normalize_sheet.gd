@@ -12,7 +12,7 @@ extends SceneTree
 ##   tools/normalize.sh <input.png> <output.png> [options]
 ## Options:
 ##   --ref <png>       reference sheet for size, ground line, head position and palette
-##                     (default assets/sprites/hero/states/idel/idel1.png)
+##                     (default assets/sprites/hero/states/idle/idle1.png)
 ##   --grid CxR        cut the input as a C x R grid instead of finding the frames by empty space
 ##   --frames N        keep only the first N frames
 ##   --scale S         force the scale (e.g. 0.5); default: shrink/grow to the reference height when the
@@ -26,7 +26,7 @@ const COLUMNS := 5
 const SOLID := 40  # alpha above this counts as part of the sprite
 
 var opts := {
-	"ref": "assets/sprites/hero/states/idel/idel1.png",
+	"ref": "assets/sprites/hero/states/idle/idle1.png",
 	"grid": Vector2i.ZERO,
 	"frames": 0,
 	"scale": 0.0,
