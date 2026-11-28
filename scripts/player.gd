@@ -62,6 +62,15 @@ const MUZZLE_SMOKE := preload("res://scripts/muzzle_smoke.gd")
 ## Muzzle smoke size compared to the shotgun (it's suppressed: just a wisp).
 @export_range(0.0, 1.0, 0.05) var vintorez_smoke := 0.3
 
+@export_group("Health")
+@export_range(1, 100, 1) var max_health := 5
+## Push when hit: x away from the attacker, y upward (negative = up).
+@export var hurt_knockback := Vector2(160.0, -140.0)
+## Seconds the controls don't respond after a hit (the knockback plays out).
+@export_range(0.0, 1.0, 0.05, "suffix:s") var hurt_stun := 0.25
+## Seconds after a hit during which further hits are ignored (the hero blinks).
+@export_range(0.0, 3.0, 0.05, "suffix:s") var hurt_invulnerable := 1.0
+
 @export_group("Animation")
 ## Draws the hero this many px lower than the collision box, so the boots sink slightly
 ## into the ground surface instead of looking like they hover on it. Visual only.
@@ -72,10 +81,10 @@ const MUZZLE_SMOKE := preload("res://scripts/muzzle_smoke.gd")
 @export_range(0.5, 40.0, 0.5, "suffix:px") var run_px_per_frame := 6.0
 ## Run frames to play, in order (0-7 = frames of states/run/run.png, left-to-right, top-to-bottom).
 @export var run_sequence: Array[int] = [0, 1, 2, 3, 4, 5, 6, 7]
-## Sprint (Shift) legs: distance moved per frame of states/run/run_x1.5_faster.png.
+## Sprint (Shift) legs: distance moved per frame of states/run/run_fast.png.
 ## At the same value as run, the 1.5x faster sprint plays the cycle 1.5x faster.
 @export_range(0.5, 40.0, 0.5, "suffix:px") var sprint_px_per_frame := 6.0
-## Sprint frames to play, in order (0-7 = frames of states/run/run_x1.5_faster.png).
+## Sprint frames to play, in order (0-7 = frames of states/run/run_fast.png).
 @export var sprint_sequence: Array[int] = [0, 1, 2, 3, 4, 5, 6, 7]
 ## Sneak (S / Down) legs: distance moved per frame of states/sneaking/sneaking.png.
 @export_range(0.5, 40.0, 0.5, "suffix:px") var sneak_px_per_frame := 4.0
@@ -102,29 +111,29 @@ const MUZZLE_SMOKE := preload("res://scripts/muzzle_smoke.gd")
 @export var slide_sequence: Array[int] = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 @export_subgroup("Jump")
-## Space jump plays states/jump/jump-up.png (frames 0-8: 0-3 crouch, 4 push-off,
+## Space jump plays states/jump/jump_up.png (frames 0-8: 0-3 crouch, 4 push-off,
 ## 5 full stretch, 6-8 feet leaving the ground).
 ## These frames are spread over the rise, from take-off to the top of the jump.
 @export var jump_up_sequence: Array[int] = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-## jump-up frame held from the top of a Space jump until landing.
+## jump_up frame held from the top of a Space jump until landing.
 @export_range(0, 8) var jump_up_fall_frame := 8
-## Walking/running off a ledge uses states/jump/jump-off.png (frames 0-8: 0 stand,
+## Walking/running off a ledge uses states/jump/jump_off.png (frames 0-8: 0 stand,
 ## 1-2 crouch, 3 push-off, 4 tuck, 5 reach, 6 legs down, 7 touchdown, 8 recover).
-## jump-off frame while dropping off a ledge.
+## jump_off frame while dropping off a ledge.
 @export_range(0, 8) var jump_off_fall_frame := 5
-## jump-off frame once falling faster than fall_fast_speed.
+## jump_off frame once falling faster than fall_fast_speed.
 @export_range(0, 8) var jump_off_fall_fast_frame := 6
 ## Falling faster than this (px/s) after leaving a ledge shows the fast-fall frame.
 @export_range(0.0, 400.0, 5.0, "suffix:px/s") var fall_fast_speed := 200.0
-## jump-off frames shown, in order, on touchdown (after either kind of jump).
+## jump_off frames shown, in order, on touchdown (after either kind of jump).
 @export var jump_land_frames: Array[int] = [7, 8]
 ## How long the landing frames show (s), split evenly between them. Running cuts it short.
 @export_range(0.0, 0.5, 0.01, "suffix:s") var landing_pose_time := 0.1
 
 # hero/states/<state>/*.png sheets, 5 columns wide. Sprite origin is at the feet.
 # idle/run: 68x68 cells, 2 rows, 8 frames. sneaking: 68x68, 3 rows, 12 frames.
-# sprint (run_x1.5_faster): 80x80, 2 rows, 8 frames.
-# jump-up: 68x68, 2 rows, 9 frames. jump-off: 80x80, 2 rows, 9 frames.
+# sprint (run_fast): 80x80, 2 rows, 8 frames.
+# jump_up: 68x68, 2 rows, 9 frames. jump_off: 80x80, 2 rows, 9 frames.
 # offset puts the cell's foot line on the origin and its centre on x = 0.
 # Each time the hero enters idle from another state, one idle variant is picked at random.
 const IDLE_SHEETS := [
@@ -132,11 +141,11 @@ const IDLE_SHEETS := [
 	{"tex": preload("res://assets/sprites/hero/states/idle/idle2.png"), "rows": 2, "frames": 8, "offset": Vector2(-34, -57)},
 ]
 const RUN_SHEET := {"tex": preload("res://assets/sprites/hero/states/run/run.png"), "rows": 2, "frames": 8, "offset": Vector2(-34, -57)}
-const SPRINT_SHEET := {"tex": preload("res://assets/sprites/hero/states/run/run_x1.5_faster.png"), "rows": 2, "frames": 8, "offset": Vector2(-40, -64)}
+const SPRINT_SHEET := {"tex": preload("res://assets/sprites/hero/states/run/run_fast.png"), "rows": 2, "frames": 8, "offset": Vector2(-40, -64)}
 const SLIDE_SHEET := {"tex": preload("res://assets/sprites/hero/states/sliding/feet_braking.png"), "rows": 2, "frames": 9, "offset": Vector2(-34, -56)}
 const SNEAK_SHEET := {"tex": preload("res://assets/sprites/hero/states/sneaking/sneaking.png"), "rows": 3, "frames": 12, "offset": Vector2(-34, -57)}
-const JUMP_UP_SHEET := {"tex": preload("res://assets/sprites/hero/states/jump/jump-up.png"), "rows": 2, "frames": 9, "offset": Vector2(-34, -57)}
-const JUMP_OFF_SHEET := {"tex": preload("res://assets/sprites/hero/states/jump/jump-off.png"), "rows": 2, "frames": 9, "offset": Vector2(-40, -64)}
+const JUMP_UP_SHEET := {"tex": preload("res://assets/sprites/hero/states/jump/jump_up.png"), "rows": 2, "frames": 9, "offset": Vector2(-34, -57)}
+const JUMP_OFF_SHEET := {"tex": preload("res://assets/sprites/hero/states/jump/jump_off.png"), "rows": 2, "frames": 9, "offset": Vector2(-40, -64)}
 const SHEET_COLUMNS := 5
 ## With the gun, each sheet is swapped for <name>-with-gun.png (or <name>_with_gun.png) found
 ## anywhere under this folder (trailing digits ignored, so idle_with_gun covers idle1 and idle2).
@@ -153,16 +162,19 @@ const GUN_SUFFIXES := ["-with-gun", "_with_gun"]
 const WEAPON_ART := preload("res://scripts/weapon_art.gd")
 const ARMED_IDLE := preload("res://assets/sprites/hero/states/idle/idle_with_no_weapon.png")
 const WEAPONS := {
-	"shotgun": {"art": "res://assets/sprites/hero/states/idle/weapons/shotgun.png", "length": 26, "grip": 0.62, "gun_sheets": true,
-		"name": "Shotgun", "icon": "res://assets/sprites/objects/pickable/weapons/shotgun_pickup.png"},
-	"vintorez": {"art": "res://assets/sprites/hero/states/idle/weapons/vintorez.png", "length": 34, "grip": 0.55, "gun_sheets": false,
-		"name": "Vintorez", "icon": "res://assets/sprites/objects/pickable/weapons/vintorez_pickup.png"},
+	"shotgun": {"art": "res://assets/sprites/weapons/shotgun.png", "length": 26, "grip": 0.62, "gun_sheets": true,
+		"name": "Shotgun", "icon": "res://assets/sprites/weapons/shotgun_pickup.png"},
+	"vintorez": {"art": "res://assets/sprites/weapons/vintorez.png", "length": 34, "grip": 0.55, "gun_sheets": false,
+		"name": "Vintorez", "icon": "res://assets/sprites/weapons/vintorez_pickup.png"},
 }
 
 ## Weapons collected so far, in pickup order (shown in the inventory).
 var weapons: Array[String] = []
 
 var facing := 1
+var health := 0
+var _hurt_stun_left := 0.0
+var _invulnerable_left := 0.0
 var aim := Vector2.RIGHT
 var _coyote := 0.0
 var _jump_buffer := 0.0
@@ -192,6 +204,11 @@ var _muzzle_forward := Vector2(22, -22)  # barrel tip for straight shots, relati
 var _gun_files := {}    # sheet name -> res:// path of its -with-gun.png
 var _gun_sheets := {}   # default texture -> gun sheet Dictionary ({} = no gun version)
 
+## Small red health bar (health_bar.gd) above the head, shown for a few seconds after a hit.
+const HEALTH_BAR := preload("res://scripts/health_bar.gd")
+const HEALTH_BAR_POS := Vector2(0, -54)  # from the feet
+var _health_bar: Node2D
+
 @onready var muzzle: Marker2D = $Muzzle
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var dust = $FootDust
@@ -199,7 +216,38 @@ var _gun_sheets := {}   # default texture -> gun sheet Dictionary ({} = no gun v
 
 func _ready() -> void:
 	add_to_group("help")  # controls list in the top-right corner (input_display.gd)
+	add_to_group("player")  # found by security cameras (camera_beam.gd)
+	health = max_health
+	_health_bar = HEALTH_BAR.new()
+	_health_bar.position = HEALTH_BAR_POS
+	add_child(_health_bar)
 	_scan_gun_sheets(STATES_DIR)
+
+
+## Called by enemies. from_direction: the way the hit pushes (e.g. the attacker's facing).
+func take_damage(amount: int, from_direction := Vector2.ZERO) -> void:
+	if _invulnerable_left > 0.0 or health <= 0:
+		return
+	health -= amount
+	_health_bar.set_ratio(float(health) / max_health)
+	var push := signf(from_direction.x) if from_direction.x != 0.0 else -float(facing)
+	velocity = Vector2(push * hurt_knockback.x, hurt_knockback.y)
+	_slide_timer = 0.0
+	_hurt_stun_left = hurt_stun
+	_invulnerable_left = hurt_invulnerable
+	sprite.modulate = Color(1.0, 0.3, 0.3)  # red flash
+	create_tween().tween_property(sprite, "modulate", Color.WHITE, 0.2)
+	if health <= 0:
+		get_tree().reload_current_scene.call_deferred()  # no game-over screen yet: restart
+
+
+func _update_hurt(delta: float) -> void:
+	_hurt_stun_left -= delta
+	if _invulnerable_left > 0.0:
+		_invulnerable_left -= delta
+		sprite.visible = _invulnerable_left <= 0.0 or int(_invulnerable_left * 15.0) % 2 == 0  # blink
+	else:
+		sprite.visible = true
 
 
 ## Called by a weapon pickup. Picking up another weapon swaps to it.
@@ -240,6 +288,9 @@ func _physics_process(delta: float) -> void:
 	# signf: an analog stick past the deadzone counts as fully pressed (digital, like the keys/D-pad)
 	var move_x := signf(Input.get_axis("move_left", "move_right"))
 	var aim_y := signf(Input.get_axis("aim_up", "aim_down"))
+	_update_hurt(delta)
+	if _hurt_stun_left > 0.0:
+		move_x = 0.0  # knocked back: no steering
 	var gait := _current_gait()
 
 	if move_x != 0.0:
@@ -277,7 +328,9 @@ func _physics_process(delta: float) -> void:
 	var prone := is_on_floor() and aim_y > 0.0 and move_x == 0.0
 	var target_x := move_x * _gait_speed(gait)
 	var rate := acceleration if move_x != 0.0 else deceleration
-	if _slide_timer > 0.0:
+	if _hurt_stun_left > 0.0:
+		pass  # keep the knockback speed
+	elif _slide_timer > 0.0:
 		velocity.x = move_toward(velocity.x, 0.0, _slide_decel * delta)
 	else:
 		velocity.x = target_x if rate <= 0.0 else move_toward(velocity.x, target_x, rate * delta)
@@ -401,7 +454,7 @@ func _update_animation(gait: String, delta: float) -> void:
 		_moving = false
 		_idle_sheet = null
 		if _space_jump:
-			# Space jump: spread jump-up over the rise, then hold its last pose on the way down
+			# Space jump: spread jump_up over the rise, then hold its last pose on the way down
 			if velocity.y < 0.0 and not jump_up_sequence.is_empty():
 				var rise := clampf(1.0 + velocity.y / _jump_launch_speed, 0.0, 1.0)
 				_show(JUMP_UP_SHEET, _pick(jump_up_sequence, rise))

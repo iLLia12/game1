@@ -1,14 +1,14 @@
 extends CanvasLayer
-## Inventory screen (assets/ui/inventory/invetory.png).
+## Inventory screen (assets/ui/inventory/inventory.png).
 ## I / Tab / Triangle opens and closes it; Esc / Circle also closes. The game pauses while it's open.
 ## Collected weapons fill the slots in pickup order. Arrows / D-pad / mouse pick a slot,
 ## Enter / Cross / click takes that weapon in hand.
 
-## invetory.png with the black around the slots made transparent.
-const PANEL := preload("res://assets/ui/inventory/invetory_slots.png")
+## inventory.png with the black around the slots made transparent.
+const PANEL := preload("res://assets/ui/inventory/inventory_slots.png")
 const COLUMNS := 4
 const ROWS := 4
-## Slot centres and inner size, in invetory.png pixels.
+## Slot centres and inner size, in inventory.png pixels.
 const SLOT_X := [290, 615, 931, 1251]
 const SLOT_Y := [142, 387, 628, 871]
 const SLOT_SIZE := Vector2(300, 222)
@@ -22,7 +22,7 @@ const GOLD := Color("f2e2b0")
 ## Darkening over the game behind the panel.
 @export var shade := Color(0, 0, 0, 0.3)
 
-var panel_scale := 0.25  # invetory.png px -> screen px, set from screen_fraction
+var panel_scale := 0.25  # inventory.png px -> screen px, set from screen_fraction
 
 var _selected := 0
 var _root: Control

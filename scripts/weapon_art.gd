@@ -10,6 +10,8 @@ const SUPERSAMPLE := 4
 
 ## Weapon image turned to horizontal (muzzle to the right) and scaled so it is `length` px long.
 ## The gun's long axis is found from its pixels; the muzzle is assumed to be the end pointing right.
+## The level is taken from the front half (barrel), not the whole gun: a stock, magazine or
+## scope tilts the whole-gun axis, which would leave the barrel pointing at the ground.
 static func held_sprite(src: Image, length: int) -> Image:
 	src = src.duplicate()
 	src.convert(Image.FORMAT_RGBA8)
@@ -36,10 +38,10 @@ static func held_sprite(src: Image, length: int) -> Image:
 				sxx += (x - mx) * (x - mx)
 				sxy += (x - mx) * (y - my)
 				syy += (y - my) * (y - my)
-	var angle := 0.5 * atan2(2.0 * sxy, sxx - syy)
-	var axis := Vector2.from_angle(angle)
+	var axis := Vector2.from_angle(0.5 * atan2(2.0 * sxy, sxx - syy))
 	if axis.x < 0.0:
 		axis = -axis
+	axis = _barrel_axis(src, Vector2(mx, my), axis)
 	var perp := Vector2(-axis.y, axis.x)  # "down" across the gun
 
 	# extent along / across the axis
@@ -88,6 +90,42 @@ static func held_sprite(src: Image, length: int) -> Image:
 	_harden(out, _darkest(out))
 	var used := out.get_used_rect()
 	return out.get_region(used) if used.size != Vector2i.ZERO else out
+
+
+## Long axis of the front half of the gun (the part ahead of the middle along `axis`),
+## pointing the same way as `axis`.
+static func _barrel_axis(src: Image, center: Vector2, axis: Vector2) -> Vector2:
+	var pts := PackedVector2Array()
+	var us := PackedFloat32Array()
+	for y in src.get_height():
+		for x in src.get_width():
+			if src.get_pixel(x, y).a8 > 128:
+				var p := Vector2(x, y)
+				pts.append(p)
+				us.append((p - center).dot(axis))
+	var sorted_us := us.duplicate()
+	sorted_us.sort()
+	var middle := sorted_us[sorted_us.size() / 2]
+	var n := 0.0
+	var m := Vector2.ZERO
+	for i in pts.size():
+		if us[i] > middle:
+			m += pts[i]
+			n += 1.0
+	if n < 3.0:
+		return axis
+	m /= n
+	var sxx := 0.0
+	var sxy := 0.0
+	var syy := 0.0
+	for i in pts.size():
+		if us[i] > middle:
+			var d := pts[i] - m
+			sxx += d.x * d.x
+			sxy += d.x * d.y
+			syy += d.y * d.y
+	var front := Vector2.from_angle(0.5 * atan2(2.0 * sxy, sxx - syy))
+	return front if front.dot(axis) >= 0.0 else -front
 
 
 ## Copy of a 5-column `body` sheet with `weapon` (from held_sprite) in the front hand of every frame.

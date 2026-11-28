@@ -10,6 +10,8 @@ const COLOR_COOL := Color("b09a78")
 @export var max_range := 96.0
 ## Last part of the range (0..1) over which the pellet fades out.
 @export_range(0.0, 1.0, 0.05) var fade_portion := 0.35
+## Damage dealt to whatever it hits that has take_damage() (enemies).
+@export_range(1, 100, 1) var damage := 1
 
 var direction := Vector2.RIGHT
 var _travelled := 0.0
@@ -30,7 +32,9 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 
 
-func _on_body_entered(_body: Node) -> void:
+func _on_body_entered(body: Node) -> void:
+	if body.has_method("take_damage"):
+		body.take_damage(damage, direction)
 	queue_free()
 
 
